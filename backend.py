@@ -15,6 +15,15 @@ class Customer(Base):
     surname = Column('Surname', String(50))
     email = Column('Email', String(100), unique=True)
     password = Column('Password', String(100))
+    security_key = Column('Security key', String(50))
+    question_id = Column('Asigned_question', ForeignKey('security_questions.id'))
+    question = relationship('SecurityQuestions', back_populates='questions')
+
+class SecurityQuestions(Base):
+    __tablename__ = 'security_questions'
+    id = Column(Integer, primary_key=True)
+    question_text = Column('question_text', String, unique=True)
+    questions = relationship('Customer', back_populates='question')
 
 class Order(Base):
     __tablename__ = 'order'
