@@ -39,6 +39,7 @@ class Product(Base):
     book_name = Column('Book Name', String(100))
     author = Column('Author', String(100))
     realease_date = Column('Realease Date', String(50))
+    price = Column('Price', Integer)
 
 Base.metadata.create_all(engine)
 
