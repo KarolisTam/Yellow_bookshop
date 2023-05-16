@@ -12,7 +12,8 @@ class Customer(Base):
     id = Column(Integer, primary_key=True)
     name = Column('Name', String(50))
     surname = Column('Surname', String(50))
-    email = Column('Email', String(100))
+    email = Column('Email', String(100), unique=True)
+    password = Column('Password', String(100))
 
 class Order(Base):
     __tablename__ = 'order'
@@ -27,10 +28,10 @@ class ProductOrder(Base):
     __tablename__ = 'product_order'
     id = Column(Integer, primary_key=True)
     customer_id = Column('Customer Number', Integer)
-    customer = relationship('Customer')
     order_id = Column('Order Number', Integer)
-    order = relationship('Order', back_populates='product_order')
     product_id = Column('Product Number', Integer)
+    customer = relationship('Customer')
+    order = relationship('Order', back_populates='product_order')
     product = relationship('Product')
 
 class Product(Base):
