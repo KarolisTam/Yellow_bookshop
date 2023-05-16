@@ -24,5 +24,5 @@ Base.metadata.create_all(engine)
 
 # session.delete(session.get(Status, 1))
 # session.commit()
-# print(session.query(Status))
+# print(session.query(Status.id))
 #print(Status(name='name'))
