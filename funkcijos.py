@@ -1,6 +1,4 @@
 from backend import *
-from test import *
-
 
 
 class LentelesFunkcijos:
@@ -19,9 +17,15 @@ class LentelesFunkcijos:
     def set_element(self, el_id, **kw):
         self.session.query(self.lentele).filter(self.lentele.id==el_id).update(kw)
         return self.session.commit()
+    
+    def get_table_el_list(self):
+        return session.query(self.lentele).all()
+    
+    def join_element_relationship(self):
+        pass
 
 
-#LentelesFunkcijos(Status).delete_element(3)
+#LentelesFunkcijos(Customer).delete_element(1)
 #LentelesFunkcijos(Status).add_element(name='name1')
-LentelesFunkcijos(Status).set_element(1, name='name2', name2='name3')
-print()
+#LentelesFunkcijos(Status).set_element(1, name='name2', name2='name3')
+#LentelesFunkcijos(SecurityQuestions).add_element(question_text='Pirmo augintinio vardas ?')
