@@ -109,7 +109,7 @@ class BookshopGUI():
         return self.get_product_list(query=filtered_books)
     
     def filter_by_year(self):
-        filtered_books_y = session.query(Product).order_by(Product.realease_date).all
+        filtered_books_y = session.query(Product).order_by(Product.realease_date).all()
         return self.get_product_list(query=filtered_books_y)
 
 
