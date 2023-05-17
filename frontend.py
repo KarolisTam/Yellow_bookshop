@@ -8,8 +8,8 @@ class BookshopGUI():
     def __init__(self):
         self.shoping_order = []
 
-    def get_product_list(self):
-        self.products = session.query(Product).all()
+    def get_product_list(self, query=session.query(Product).all()):
+        self.products = query
         product_list = []
         for item in self.products:           
             product_list.append([item.id, 
