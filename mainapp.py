@@ -19,16 +19,14 @@ layout = [
     ]    
 
 window = sg.Window("BOOK_SHOP", layout)
-condition = False
-if Login().login_page():
-    condition = True
+customer_id, condition = Login().login_page()
 
 while condition == True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED or event == 'EXIT':
         break
     elif event == 'ADD TO CART':
-        obijektas.add_to_oder_cart(table, values)
+        obijektas.add_to_oder_cart(table, values)x
     elif event == 'VIEW CART':
         obijektas.shopping_oder()
         window["-TABLE-"].update(values=obijektas.get_product_list())
