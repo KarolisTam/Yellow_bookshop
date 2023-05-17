@@ -1,6 +1,8 @@
 from frontend import *
 import PySimpleGUI as sg
 
+obijektas = BookshopGUI()
+
 headers = ['ID', 'Book Title', "Author", 'Year of Release', 'Price', 'Quantity']
 table = sg.Table(values=BookshopGUI().get_product_list(), headings=headers, 
     auto_size_columns=True, key="-TABLE-", enable_events=True)
@@ -22,15 +24,15 @@ while True:
     if event == sg.WINDOW_CLOSED or event == 'EXIT':
         break
     elif event == 'ADD TO CART':
-        BookshopGUI().add_to_oder_cart(table, values)
+        obijektas.add_to_oder_cart(table, values)
     elif event == 'VIEW CART':
-        BookshopGUI().shopping_oder()
+        obijektas.shopping_oder()
     elif event == 'FILTER BOOKS BY AUTHOR':
         pass
     elif event == 'FILTER BOOKS BY YEAR':
         pass
     elif event == 'VIEW PURCHASE HISTORY':
-        BookshopGUI().purchase_history()
+        obijektas.purchase_history()
 window.close()
 
 
