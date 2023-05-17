@@ -59,3 +59,14 @@ class Status(Base):
     status_name = Column('Status', String(50))
 
 Base.metadata.create_all(engine)
+
+# book1 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1836', price=15, quantity=2)
+# session.add(book1)
+# session.commit()
+
+
+
+
+
+
+
