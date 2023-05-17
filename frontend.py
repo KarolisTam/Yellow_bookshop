@@ -1,10 +1,7 @@
 import PySimpleGUI as sg
 from backend import Product, Customer, SecurityQuestions, engine, session
 from funkcijos import LentelesFunkcijos
-from sqlalchemy.orm import sessionmaker
 import time
-
-#session = sessionmaker(bind=engine)()
 
 class BookshopGUI():
 
@@ -18,43 +15,18 @@ class BookshopGUI():
             product_list.append([item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity])
         return product_list
 
-    # def __init__(self):
-    #     headers = ['ID', 'Book Title', "Author", 'Year of Release', 'Price', 'Quantity']
-    #     self.table = sg.Table(values=self.get_product_list(), headings=headers, 
-    #                           auto_size_columns=True, key="-TABLE-", enable_events=True)
-    #     self.layout = [
-    #         [self.table],
-    #         [sg.Button("ADD TO CART"), sg.Button("VIEW CART"), sg.Button("FILTER BOOKS BY AUTHOR")],
-    #         [sg.Button("FILTER BOOKS BY THE YEAR"), sg.Button("EXIT"), sg.Button("VIEW PURCHASE HISTORY")]]
-    #     self.window = sg.Window("BOOK_SHOP", layout=self.layout)
-    # def run(self):
-    #     while True:
-    #         event, values = self.window.read()
-    #         if event == sg.WINDOW_CLOSED or event == 'EXIT':
-    #             break
-    #         elif event == 'ADD TO CART':
-    #             pass
-    #         elif event == 'VIEW CART':
-    #             pass
-    #         elif event == 'FILTER BOOKS BY AUTHOR':
-    #             pass
-    #         elif event == 'FILTER BOOKS BY YEAR':
-    #             pass
-    #         elif event == 'VIEW PURCHASE HISTORY':
-    #             pass
-
 
     def add_to_oder_cart(self, table, values):
         selected_rows = table.SelectedRows
         if selected_rows:
             selected_row = self.get_product_list()[values["-TABLE-"][0]]
-            self.shoping_order.append(selected_row)
-            # shoping_order.append(selected_row)
-            # return self.shoping_order
+            self.shoping_order.append(selected_row[1:])
+            print(selected_row)
+            return self.shoping_order
 
 
     def shopping_oder(self):
-        self.__init__()
+        print(self.shoping_order)
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
         layout =[
