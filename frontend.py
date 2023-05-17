@@ -27,7 +27,7 @@ class BookshopGUI():
             print(selected_row)
             return self.shoping_order
 
-    def shopping_oder(self):
+    def shopping_order(self):
         print(self.shoping_order)
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
@@ -49,11 +49,10 @@ class BookshopGUI():
             elif event == "remove":
                 selected_rows = values["order_table"][0]
                 print(selected_rows)
-                 del self.shoping_order[selected_rows]
+                del self.shoping_order[selected_rows]
                 shopcart["order_table"].update(values=self.shoping_order)
           
             elif event == "purchase":
-                self.loading_window()
                 for product in self.get_product_list():
                     for product_order in self.shoping_order:
                         if product[1] in product_order[0]:
@@ -61,6 +60,8 @@ class BookshopGUI():
                 for product in self.get_product_list():
                     if product[5] == 0:
                         LentelesFunkcijos(Product).delete_element(product[0])
+                self.shoping_order.clear()
+                shopcart["order_table"].update(values=self.shoping_order)
                 self.loading_window()
         shopcart.close()
 

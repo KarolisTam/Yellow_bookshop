@@ -30,8 +30,8 @@ while condition == True:
     elif event == 'ADD TO CART':
         obijektas.add_to_oder_cart(table, values)
     elif event == 'VIEW CART':
-        obijektas.shopping_oder()
-        window.refresh()
+        obijektas.shopping_order()
+        window["-TABLE-"].update(values=BookshopGUI().get_product_list())
     elif event == 'FILTER BOOKS BY AUTHOR':
         pass
     elif event == 'FILTER BOOKS BY YEAR':
