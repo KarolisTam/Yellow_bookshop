@@ -19,7 +19,6 @@ class BookshopGUI():
                                  item.price, item.quantity])
         return product_list
 
-
     def add_to_oder_cart(self, table, values):
         selected_rows = table.SelectedRows
         if selected_rows:
@@ -27,7 +26,6 @@ class BookshopGUI():
             self.shoping_order.append(selected_row[1:])
             print(selected_row)
             return self.shoping_order
-
 
     def shopping_oder(self):
         print(self.shoping_order)
@@ -51,11 +49,19 @@ class BookshopGUI():
             elif event == "remove":
                 selected_rows = values["order_table"][0]
                 print(selected_rows)
-                del self.shoping_order[selected_rows]
+                 del self.shoping_order[selected_rows]
                 shopcart["order_table"].update(values=self.shoping_order)
+          
             elif event == "purchase":
                 self.loading_window()
-
+                for product in self.get_product_list():
+                    for product_order in self.shoping_order:
+                        if product[1] in product_order[0]:
+                            LentelesFunkcijos(Product).set_element(product[0], quantity=Product.quantity - 1)
+                for product in self.get_product_list():
+                    if product[5] == 0:
+                        LentelesFunkcijos(Product).delete_element(product[0])
+                self.loading_window()
         shopcart.close()
 
     def purchase_history():
@@ -231,12 +237,3 @@ class Login:
             elif event == "-ENTER-":
                 register_window.close()
                 self.login_page()
-                break
-
-
-
-
-Login().login_page()
-
-
-
