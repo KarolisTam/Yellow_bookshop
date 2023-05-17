@@ -18,6 +18,7 @@ class Customer(Base):
     security_key = Column('Security key', String(50))
     question_id = Column('Asigned_question', ForeignKey('security_questions.id'))
     question = relationship('SecurityQuestions', back_populates='questions')
+    product_orders = relationship('ProductOrder', back_populates='customer')
 
 class SecurityQuestions(Base):
     __tablename__ = 'security_questions'
@@ -28,10 +29,12 @@ class SecurityQuestions(Base):
 class Order(Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
-    order_name = Column('Order', String(100))
+    # order_name = Column('Order', String(100))
     date = Column('Order Date', DateTime, default=datetime.datetime.utcnow)
-    status_id = Column('Status Number', Integer, ForeignKey('status.id'))
-    status = relationship('Status')
+    # status_id = Column('Status Number', Integer, ForeignKey('status.id'))
+    product_id = Column('Product Number', Integer, ForeignKey('product.id'))
+    products = relationship('Product', back_populates='product')
+    # status = relationship('Status')
     product_order = relationship('ProductOrder', back_populates='order')
 
 class ProductOrder(Base):
@@ -39,10 +42,8 @@ class ProductOrder(Base):
     id = Column(Integer, primary_key=True)
     customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
     order_id = Column('Order Number', Integer, ForeignKey('order.id'))
-    product_id = Column('Product Number', Integer, ForeignKey('product.id'))
-    customer = relationship('Customer')
+    customer = relationship('Customer', back_populates='product_orders')
     order = relationship('Order', back_populates='product_order')
-    product = relationship('Product')
 
 class Product(Base):
     __tablename__ = 'product'
@@ -52,17 +53,20 @@ class Product(Base):
     realease_date = Column('Realease Date', String(50))
     price = Column('Price', Integer)
     quantity = Column('Quantity', Integer)
+    product = relationship('Order', back_populates='products')
 
 class Status(Base):
     __tablename__ = 'status'
     id = Column(Integer, primary_key=True)
     status_name = Column('Status', String(50))
 
+
+
 Base.metadata.create_all(engine)
 
-book1 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=2)
-session.add(book1)
-session.commit()
+# book1 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=2)
+# session.add(book1)
+# session.commit()
 
 
 
