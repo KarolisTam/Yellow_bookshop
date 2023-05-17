@@ -12,7 +12,11 @@ class BookshopGUI():
         self.products = session.query(Product).all()
         product_list = []
         for item in self.products:           
-            product_list.append([item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity])
+            product_list.append([item.id, 
+                                 item.book_name, 
+                                 item.author, 
+                                 item.realease_date, 
+                                 item.price, item.quantity])
         return product_list
 
 
@@ -30,8 +34,14 @@ class BookshopGUI():
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
         layout =[
-            [sg.Table(values=self.shoping_order, headings=headers, auto_size_columns=True, key="order_table", enable_events=True)],
-            [sg.Button("Remove", key="remove"), sg.Button("Purchase", key="purchase"), sg.Button("Close Shopping Order", key="close")]
+            [sg.Table(values=self.shoping_order, 
+                        headings=headers,
+                        auto_size_columns=True,
+                        key="order_table",
+                        enable_events=True)],
+            [sg.Button("Remove", key="remove"), 
+             sg.Button("Purchase", key="purchase"), 
+             sg.Button("Close Shopping Order", key="close")]
         ]
         shopcart = sg.Window("Shoping Order", layout)
         while True:
@@ -41,6 +51,10 @@ class BookshopGUI():
             elif event == "remove":
                 selected_rows = values["order_table"][0]
                 print(selected_rows)
+                del self.shoping_order[selected_rows]
+                shopcart["order_table"].update(values=self.shoping_order)
+            elif event == "purchase":
+                self.loading_window()
 
         shopcart.close()
 
@@ -62,13 +76,13 @@ class BookshopGUI():
     def loading_window(self):
         layout = [
             [sg.Text('Confirming order', size=(20, 1), justification='center')],
-            [sg.ProgressBar(100, orientation='h', size=(20, 20), key='progressbar')]
+            [sg.ProgressBar(50, orientation='h', size=(20, 20), key='progressbar')]
         ]
 
         window = sg.Window('Loading order...', layout, finalize=True)
 
         for bar_range in range(100):
-            event, values = window.read(timeout=100)
+            event, values = window.read(timeout=50)
             if event == sg.WINDOW_CLOSED:
                 break
             window['progressbar'].update_bar(bar_range + 10)
@@ -206,6 +220,6 @@ class Login:
                     self.login_page()
                     break
 
-# Login().login_page()
+Login().login_page()
 
 

@@ -12,11 +12,11 @@ layout = [
     [table],
     [sg.Button("ADD TO CART"), 
         sg.Button("VIEW CART"), 
-        sg.Button("FILTER BOOKS BY AUTHOR"), 
-        sg.Button("FILTER BOOKS BY THE YEAR"), 
+        sg.Button("FILTER BOOKS BY AUTHOR")], 
+    [sg.Button("FILTER BOOKS BY THE YEAR"), 
         sg.Button("EXIT"), 
-        sg.Button("VIEW PURCHASE HISTORY"),
-        sg.Button("CONFIRM ORDER")]
+        sg.Button("VIEW PURCHASE HISTORY")]
+
     ]    
 
 window = sg.Window("BOOK_SHOP", layout)
@@ -34,9 +34,6 @@ while True:
     elif event == 'FILTER BOOKS BY YEAR':
         pass
     elif event == 'VIEW PURCHASE HISTORY':
-        obijektas.purchase_history()
-    elif event == 'CONFIRM ORDER':
-        obijektas.loading_window()
         obijektas.purchase_history()
 window.close()
 
