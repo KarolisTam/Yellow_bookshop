@@ -7,9 +7,11 @@ class BookshopGUI():
 
     def __init__(self):
         self.shoping_order = []
+        self.filter_input = sg.Input("", key="FILTER BOOKS BY AUTHOR")
 
-    def get_product_list(self):
-        self.products = session.query(Product).all()
+
+    def get_product_list(self, query=session.query(Product).all()):
+        self.products = query
         product_list = []
         for item in self.products:           
             product_list.append([item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity])
@@ -76,6 +78,30 @@ class BookshopGUI():
     
         window.close()    
         sg.popup('Order confirmed!')
+    
+    
+    
+    
+    
+    def filter_by_author(self):
+        filtered_books = session.query(Product).order_by(Product.author).all()
+        return self.get_product_list(query=filtered_books)
+    
+    def filter_by_year(self):
+        filtered_books_y = session.query(Product).order_by(Product.realease_date).all
+        return self.get_product_list(query=filtered_books_y)
+
+
+        # filtered_data = []
+        # filter_value = self.filter_input.get().strip().lower()
+        # if filter_value:
+        #     filtered_data = [[item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity]
+        #                     for item in self.products
+        #                     if filter_value in item.author.lower()]
+        # window["-TABLE-"].update(values=filtered_data)
+        # return filtered_data
+    
+    
 
 class Login:
     def __init__(self):

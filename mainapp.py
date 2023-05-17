@@ -33,9 +33,9 @@ while condition == True:
     elif event == 'VIEW CART':
         obijektas.shopping_oder()
     elif event == 'FILTER BOOKS BY AUTHOR':
-        pass
+        window["-TABLE-"].update(values=obijektas.filter_by_author())
     elif event == 'FILTER BOOKS BY YEAR':
-        pass
+        window["-TABLE-"].update(values=obijektas.filter_by_year())
     elif event == 'VIEW PURCHASE HISTORY':
         obijektas.purchase_history()
     elif event == 'CONFIRM ORDER':
