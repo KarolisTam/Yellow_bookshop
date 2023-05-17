@@ -20,8 +20,11 @@ layout = [
     ]    
 
 window = sg.Window("BOOK_SHOP", layout)
+condition = False
+if Login().login_page():
+    condition = True
 
-while True:
+while condition == True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED or event == 'EXIT':
         break
