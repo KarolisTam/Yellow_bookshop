@@ -2,7 +2,7 @@ from frontend import *
 import PySimpleGUI as sg
 
 headers = ['ID', 'Book Title', "Author", 'Year of Release', 'Price', 'Quantity']
-table = sg.Table(values=get_product_list(), headings=headers, 
+table = sg.Table(values=BookshopGUI().get_product_list(), headings=headers, 
     auto_size_columns=True, key="-TABLE-", enable_events=True)
 
 layout = [
@@ -16,8 +16,11 @@ layout = [
 ]
 
 window = sg.Window("BOOK_SHOP", layout)
+condition = False
+if Login().login_page():
+    condition = True
 
-while True:
+while condition == True:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED or event == 'EXIT':
         break

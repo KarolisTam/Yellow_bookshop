@@ -7,12 +7,11 @@ from sqlalchemy.orm import sessionmaker
 
 
 class BookshopGUI():
-
     def get_product_list(self):
         self.products = session.query(Product).all()
         product_list = []
         for item in self.products:           
-            product_list.append([item.id, item.book_title, item.author, item.year, item.price, item.quantity])
+            product_list.append([item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity])
         return product_list
 
     def __init__(self):
@@ -82,11 +81,26 @@ def purchase_history():
     history.close()
 
 class Login:
+    def __init__(self):
+        # lists
+        self.lst_customer_emails = []
+        self.lst_customer_s_keys = []
+        self.lst_customer_pass = []
+        for customer in LentelesFunkcijos(Customer).get_table_el_list():
+            self.lst_customer_emails.append(customer.email)
+            self.lst_customer_s_keys.append(customer.security_key)
+            self.lst_customer_pass.append(customer.password)
+
+        # List in order for sg.Combo to work (in register_page)
+        self.list_s_questions = []
+        for s_question in LentelesFunkcijos(SecurityQuestions).get_table_el_list():
+            self.list_s_questions.append(s_question.question_text)
+        
     def forgot_page(self):
         layout =[
             [sg.Text('E-mail: '), sg.Input(key="-EMAIL-")],
             [sg.Text('Security key: '), sg.Input(key="-SECURITY-")],
-            [sg.Button("login", key="-ENTER-"),
+            [sg.Button("Back", key="-ENTER-"),
             sg.Button("Exit", key="-EXIT-"),
             sg.Button("Remember my password", key="-REMEMBER-"),
             sg.Button("Register", key='-REGISTER-')]]
@@ -98,22 +112,20 @@ class Login:
 
             if event in (sg.WIN_CLOSED, '-EXIT-'):
                 forgot_window.close()
-                break
+                return False
             elif event == '-REMEMBER-':
+                #f"" UOSTO SUBINE !!!
                 email = values['-EMAIL-']
-                lst_customer_emails = []
-                lst_customer_s_keys = []
-                for customer in LentelesFunkcijos(Customer).get_table_el_list():
-                    lst_customer_emails.append(customer.email)
-                    lst_customer_s_keys.append(customer.security_key)
-                if values['-EMAIL-'] not in lst_customer_emails:
+
+                if values['-EMAIL-'] not in self.lst_customer_emails:
                     sg.Popup('Wrong email')
                     continue
-                if values['-SECURITY-'] not in lst_customer_s_keys:
-                    sg.Popup(f'Wrong security key, Your security question is \n{session.query(SecurityQuestions.question_text).filter(Customer.email == email).join(Customer.question).one()[0]}')
+                if values['-SECURITY-'] not in self.lst_customer_s_keys:
+                    sg.Popup('Wrong security key, Your security question is \n{}'.format(session.query(SecurityQuestions.question_text).filter(Customer.email==values['-EMAIL-']).join(Customer.question).one()[0]))
                     continue
                 else:
-                    sg.Popup(f"E-mail: {session.query(Customer.email).filter(Customer.email==email).one()[0]}\nPassword: {session.query(Customer.password).filter(Customer.email==email).one()[0]}")
+                    #sg.Popup(f"E-mail: {session.query(Customer.email).filter(Customer.email==email).one()[0]}\nPassword: {session.query(Customer.password).filter(Customer.email==email).one()[0]}")
+                    sg.Popup("E-mail: {0}\nPassword: {1}".format(session.query(Customer.email).filter(Customer.email==values['-EMAIL-']).one()[0], session.query(Customer.password).filter(Customer.email==values['-EMAIL-']).one()[0]))
             elif event == '-REGISTER-':
                 forgot_window.close()
                 self.register_page()
@@ -123,8 +135,8 @@ class Login:
                 self.login_page()
                 break
 
-
     def login_page(self):
+        self.__init__()
         layout =[
             [sg.Text('E-mail: '), sg.Input(key="-EMAIL-")],
             [sg.Text('Password: '), sg.Input(password_char='*', key="-PASS-")],
@@ -137,22 +149,20 @@ class Login:
         while True:
             event, values = login_window.read()
             if event in (sg.WIN_CLOSED, '-EXIT-'):
-                break
+                return False
+                
             elif event == '-ENTER-':
-                lst_customer_emails = []
-                lst_customer_pass = []
-                for customer in LentelesFunkcijos(Customer).get_table_el_list():
-                    lst_customer_emails.append(customer.email)
-                    lst_customer_pass.append(customer.password)
-
-                if values['-EMAIL-'] not in lst_customer_emails:
+                if values['-EMAIL-'] not in self.lst_customer_emails:
                     sg.Popup('Wrong email')
                     continue
-                if values['-PASS-'] not in lst_customer_pass:
+                if values['-PASS-'] not in self.lst_customer_pass:
                     sg.Popup('Wrong password')
                     continue
                 else:
                     sg.Popup('Login sucessful')
+                    login_window.close()
+
+                    return True
             elif event == '-FORGOT-':
                 login_window.close()
                 self.forgot_page()
@@ -163,20 +173,17 @@ class Login:
                 break
 
     def register_page(self):
-        list_s_questions = []
-        for s_question in LentelesFunkcijos(SecurityQuestions).get_table_el_list():
-            list_s_questions.append(s_question.question_text)
-        
         layout =[
             [sg.Text('E-mail: '), sg.Input(key="-EMAIL-")],
             [sg.Text('Name: '), sg.Input(key="-NAME-")],
             [sg.Text('Surname: '), sg.Input(key="-SURNAME-")],
             [sg.Text('Password: '), sg.Input(password_char='*', key="-PASS-")],
             [sg.Text('Repeat Password: '), sg.Input(password_char='*', key="-REPEAT_PASS-")],
-            [sg.Text('Security question'), sg.Combo(list_s_questions, default_value=list_s_questions[0], enable_events=True, readonly=True, key='-COMBO-')],
+            [sg.Text('Security question'), sg.Combo(self.list_s_questions, default_value=self.list_s_questions[0], enable_events=True, readonly=True, key='-COMBO-')],
             [sg.Text('Security key: '), sg.Input(key="-SECURITY-")],
-            [sg.Button("Exit", key="-EXIT-"),
-            sg.Button("Register", key='-REGISTER-')]]
+            [sg.Button('Exit', key="-EXIT-"),
+            sg.Button('Register', key="-REGISTER-"),
+            sg.Button('Back', key="-ENTER-")]]
         
         register_window = sg.Window('Register page', layout)
 
@@ -185,7 +192,7 @@ class Login:
 
             if event in (sg.WIN_CLOSED, '-EXIT-'):
                 register_window.close()
-                break
+                return False
 
             elif event == '-REGISTER-':
                 #print(session.query(SecurityQuestions.id).filter(SecurityQuestions.question_text==values['-COMBO-']).one()[0])
@@ -209,7 +216,12 @@ class Login:
                     register_window.close()
                     self.login_page()
                     break
+            
+            elif event == "-ENTER-":
+                register_window.close()
+                self.login_page()
+                break
 
-Login().login_page()
+#Login().login_page()
 
 
