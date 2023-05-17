@@ -19,6 +19,7 @@ class Customer(Base):
     question_id = Column('Asigned_question', ForeignKey('security_questions.id'))
     question = relationship('SecurityQuestions', back_populates='questions')
     product_orders = relationship('ProductOrder', back_populates='customer')
+    orders = relationship('Order', back_populates='customer')
 
 class SecurityQuestions(Base):
     __tablename__ = 'security_questions'
@@ -33,9 +34,11 @@ class Order(Base):
     date = Column('Order Date', DateTime, default=datetime.datetime.utcnow)
     # status_id = Column('Status Number', Integer, ForeignKey('status.id'))
     product_id = Column('Product Number', Integer, ForeignKey('product.id'))
+    customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
     products = relationship('Product', back_populates='product')
     # status = relationship('Status')
     product_order = relationship('ProductOrder', back_populates='order')
+    customer = relationship('Customer', back_populates='orders')
 
 class ProductOrder(Base):
     __tablename__ = 'product_order'

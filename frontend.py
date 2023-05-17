@@ -23,13 +23,20 @@ class BookshopGUI():
         selected_rows = table.SelectedRows
         if selected_rows:
             selected_row = self.get_product_list()[values["-TABLE-"][0]]
-            LentelesFunkcijos(Order).add_element(product_id = values["-TABLE-"][0]+1)
+            LentelesFunkcijos(Order).add_element(customer_id=customer_id[0], product_id = values["-TABLE-"][0]+1)
             self.shoping_order.append(selected_row[1:])
             print(selected_row)
             return self.shoping_order
 
     def shopping_oder(self):
         print(self.shoping_order)
+
+        ##### reik i ideti sita query i shoping order lista
+        print(session.query(Product.book_name, 
+                      Product.author, 
+                      Product.realease_date,
+                      Product.price).join(Order.products).filter(Order.customer_id==customer_id[0]).all())
+        #####
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
         layout =[
@@ -128,6 +135,7 @@ class Login:
             self.lst_customer_emails.append(customer.email)
             self.lst_customer_s_keys.append(customer.security_key)
             self.lst_customer_pass.append(customer.password)
+        self.customer_id = 0
 
         # List in order for sg.Combo to work (in register_page)
         self.list_s_questions = []
@@ -150,7 +158,7 @@ class Login:
 
             if event in (sg.WIN_CLOSED, '-EXIT-'):
                 forgot_window.close()
-                return 0, False
+                return self.customer_id, False
             elif event == '-REMEMBER-':
                 #f"" UOSTO SUBINE !!!
                 email = values['-EMAIL-']
@@ -187,7 +195,7 @@ class Login:
         while True:
             event, values = login_window.read()
             if event in (sg.WIN_CLOSED, '-EXIT-'):
-                return 0, False
+                return self.customer_id, False
                 
             elif event == '-ENTER-':
                 if values['-EMAIL-'] not in self.lst_customer_emails:
@@ -199,8 +207,8 @@ class Login:
                 else:
                     sg.Popup('Login sucessful')
                     login_window.close()
-                    customer_id = session.query(Customer.id).filter(Customer.email==values['-EMAIL-']).one()
-                    return customer_id, True
+                    self.customer_id = session.query(Customer.id).filter(Customer.email==values['-EMAIL-']).one()
+                    return self.customer_id, True
             elif event == '-FORGOT-':
                 login_window.close()
                 self.forgot_page()
@@ -230,7 +238,7 @@ class Login:
 
             if event in (sg.WIN_CLOSED, '-EXIT-'):
                 register_window.close()
-                return 0, False
+                return self.customer_id, False
 
             elif event == '-REGISTER-':
                 #print(session.query(SecurityQuestions.id).filter(SecurityQuestions.question_text==values['-COMBO-']).one()[0])
@@ -258,4 +266,6 @@ class Login:
             elif event == "-ENTER-":
                 register_window.close()
                 self.login_page()
+
+customer_id, condition = Login().login_page()
 
