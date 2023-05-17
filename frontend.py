@@ -14,9 +14,12 @@ class BookshopGUI():
         self.products = query
         product_list = []
         for item in self.products:           
-            product_list.append([item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity])
+            product_list.append([item.id, 
+                                 item.book_name, 
+                                 item.author, 
+                                 item.realease_date, 
+                                 item.price, item.quantity])
         return product_list
-
 
     def add_to_oder_cart(self, table, values):
         selected_rows = table.SelectedRows
@@ -26,14 +29,19 @@ class BookshopGUI():
             print(selected_row)
             return self.shoping_order
 
-
-    def shopping_oder(self):
+    def shopping_order(self):
         print(self.shoping_order)
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
         layout =[
-            [sg.Table(values=self.shoping_order, headings=headers, auto_size_columns=True, key="order_table", enable_events=True)],
-            [sg.Button("Remove", key="remove"), sg.Button("Purchase", key="purchase"), sg.Button("Close Shopping Order", key="close")]
+            [sg.Table(values=self.shoping_order, 
+                        headings=headers,
+                        auto_size_columns=True,
+                        key="order_table",
+                        enable_events=True)],
+            [sg.Button("Remove", key="remove"), 
+             sg.Button("Purchase", key="purchase"), 
+             sg.Button("Close Shopping Order", key="close")]
         ]
         shopcart = sg.Window("Shoping Order", layout)
         while True:
@@ -43,7 +51,20 @@ class BookshopGUI():
             elif event == "remove":
                 selected_rows = values["order_table"][0]
                 print(selected_rows)
-
+                del self.shoping_order[selected_rows]
+                shopcart["order_table"].update(values=self.shoping_order)
+          
+            elif event == "purchase":
+                for product in self.get_product_list():
+                    for product_order in self.shoping_order:
+                        if product[1] in product_order[0]:
+                            LentelesFunkcijos(Product).set_element(product[0], quantity=Product.quantity - 1)
+                for product in self.get_product_list():
+                    if product[5] == 0:
+                        LentelesFunkcijos(Product).delete_element(product[0])
+                self.shoping_order.clear()
+                shopcart["order_table"].update(values=self.shoping_order)
+                self.loading_window()
         shopcart.close()
 
     def purchase_history():
@@ -64,13 +85,13 @@ class BookshopGUI():
     def loading_window(self):
         layout = [
             [sg.Text('Confirming order', size=(20, 1), justification='center')],
-            [sg.ProgressBar(100, orientation='h', size=(20, 20), key='progressbar')]
+            [sg.ProgressBar(50, orientation='h', size=(20, 20), key='progressbar')]
         ]
 
         window = sg.Window('Loading order...', layout, finalize=True)
 
         for bar_range in range(100):
-            event, values = window.read(timeout=100)
+            event, values = window.read(timeout=50)
             if event == sg.WINDOW_CLOSED:
                 break
             window['progressbar'].update_bar(bar_range + 10)
@@ -243,12 +264,3 @@ class Login:
             elif event == "-ENTER-":
                 register_window.close()
                 self.login_page()
-                break
-
-
-
-
-# Login().login_page()
-
-
-
