@@ -59,6 +59,8 @@ class BookshopGUI():
                 for product in self.get_product_list():
                     if product[5] == 0:
                         LentelesFunkcijos(Product).delete_element(product[0])
+                self.shoping_order.clear()
+                shopcart["order_table"].update(values=self.shoping_order)
                 self.loading_window()
         shopcart.close()
 
