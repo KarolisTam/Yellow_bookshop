@@ -1,5 +1,8 @@
 from frontend import *
 import PySimpleGUI as sg
+import time
+
+obijektas = BookshopGUI()
 
 headers = ['ID', 'Book Title', "Author", 'Year of Release', 'Price', 'Quantity']
 table = sg.Table(values=BookshopGUI().get_product_list(), headings=headers, 
@@ -12,8 +15,9 @@ layout = [
         sg.Button("FILTER BOOKS BY AUTHOR"), 
         sg.Button("FILTER BOOKS BY THE YEAR"), 
         sg.Button("EXIT"), 
-        sg.Button("VIEW PURCHASE HISTORY")]
-]
+        sg.Button("VIEW PURCHASE HISTORY"),
+        sg.Button("CONFIRM ORDER")]
+    ]    
 
 window = sg.Window("BOOK_SHOP", layout)
 condition = False
@@ -25,14 +29,17 @@ while condition == True:
     if event == sg.WINDOW_CLOSED or event == 'EXIT':
         break
     elif event == 'ADD TO CART':
-        pass
+        obijektas.add_to_oder_cart(table, values)
     elif event == 'VIEW CART':
-        shopping_oder()
+        obijektas.shopping_oder()
     elif event == 'FILTER BOOKS BY AUTHOR':
         pass
     elif event == 'FILTER BOOKS BY YEAR':
         pass
     elif event == 'VIEW PURCHASE HISTORY':
-        purchase_history()
+        obijektas.purchase_history()
+    elif event == 'CONFIRM ORDER':
+        obijektas.loading_window()
+        obijektas.purchase_history()
 window.close()
 

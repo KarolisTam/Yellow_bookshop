@@ -1,12 +1,13 @@
 import PySimpleGUI as sg
 from backend import Product, Customer, SecurityQuestions, engine, session
 from funkcijos import LentelesFunkcijos
-from sqlalchemy.orm import sessionmaker
-
-#session = sessionmaker(bind=engine)()
-
+import time
 
 class BookshopGUI():
+
+    def __init__(self):
+        self.shoping_order = []
+
     def get_product_list(self):
         self.products = session.query(Product).all()
         product_list = []
@@ -14,71 +15,67 @@ class BookshopGUI():
             product_list.append([item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity])
         return product_list
 
-    def __init__(self):
-        headers = ['ID', 'Book Title', "Author", 'Year of Release', 'Price', 'Quantity']
-        self.table = sg.Table(values=self.get_product_list(), headings=headers, 
-                              auto_size_columns=True, key="-TABLE-", enable_events=True)
-        self.layout = [
-            [self.table],
-            [sg.Button("ADD TO CART"), 
-             sg.Button("VIEW CART"), 
-             sg.Button("FILTER BOOKS BY AUTHOR"), 
-             sg.Button("FILTER BOOKS BY THE YEAR"), 
-             sg.Button("EXIT"), 
-             sg.Button("VIEW PURCHASE HISTORY")]]
-        self.window = sg.Window("BOOK_SHOP", layout=self.layout)
 
-    def run(self):
+    def add_to_oder_cart(self, table, values):
+        selected_rows = table.SelectedRows
+        if selected_rows:
+            selected_row = self.get_product_list()[values["-TABLE-"][0]]
+            self.shoping_order.append(selected_row[1:])
+            print(selected_row)
+            return self.shoping_order
+
+
+    def shopping_oder(self):
+        print(self.shoping_order)
+        sg.theme("LightGreen5")
+        headers =["Book name", "Author", "Release year", "Price"]
+        layout =[
+            [sg.Table(values=self.shoping_order, headings=headers, auto_size_columns=True, key="order_table", enable_events=True)],
+            [sg.Button("Remove", key="remove"), sg.Button("Purchase", key="purchase"), sg.Button("Close Shopping Order", key="close")]
+        ]
+        shopcart = sg.Window("Shoping Order", layout)
         while True:
-            event, values = self.window.read()
-            if event == sg.WINDOW_CLOSED or event == 'EXIT':
+            event, values = shopcart.read()
+            if event in (sg.WIN_CLOSED, 'close'):
                 break
-            elif event == 'ADD TO CART':
-                pass
-            elif event == 'VIEW CART':
-                pass
-            elif event == 'FILTER BOOKS BY AUTHOR':
-                pass
-            elif event == 'FILTER BOOKS BY YEAR':
-                pass
-            elif event == 'VIEW PURCHASE HISTORY':
-                pass
+            elif event == "remove":
+                selected_rows = values["order_table"][0]
+                print(selected_rows)
 
+        shopcart.close()
 
-def shopping_oder():
+    def purchase_history():
+        sg.theme("LightGreen5")
+        headers =["Book name", "Author", "Release year", "Price", "Purchase Date"]
+        layout =[
+            [sg.Table(values="", headings=headers, auto_size_columns=True, key="history_table")],
+            [sg.Button("Close Purchase History", key="close")]
+        ]
+        history = sg.Window("Shoping History", layout)
+        while True:
+            event, values = history.read()
+            if event in (sg.WIN_CLOSED, 'close'):
+                break
+    
+        history.close()
+    
+    def loading_window(self):
+        layout = [
+            [sg.Text('Confirming order', size=(20, 1), justification='center')],
+            [sg.ProgressBar(100, orientation='h', size=(20, 20), key='progressbar')]
+        ]
 
-    sg.theme("LightGreen5")
-    headers =["Book name", "Author", "Release year", "Price"]
-    layout =[
-        [sg.Table(values="", headings=headers, auto_size_columns=True, key="order_table", enable_events=True)],
-        [sg.Button("Remove", key="remove"), sg.Button("Purchase", key="purchase"), sg.Button("Close Shopping Order", key="close")]
-    ]
-    shopcart = sg.Window("Shoping Order", layout)
-    while True:
-        event, values = shopcart.read()
-        if event in (sg.WIN_CLOSED, 'close'):
-            break
-        elif event == "remove":
-            selected_rows = values["order_table"][0]
-            print(selected_rows)
+        window = sg.Window('Loading order...', layout, finalize=True)
 
-   
-    shopcart.close()
-
-def purchase_history():
-    sg.theme("LightGreen5")
-    headers =["Book name", "Author", "Release year", "Price", "Purchase Date"]
-    layout =[
-        [sg.Table(values="", headings=headers, auto_size_columns=True, key="history_table")],
-        [sg.Button("Close Purchase History", key="close")]
-    ]
-    history = sg.Window("Shoping History", layout)
-    while True:
-        event, values = history.read()
-        if event in (sg.WIN_CLOSED, 'close'):
-            break
-   
-    history.close()
+        for bar_range in range(100):
+            event, values = window.read(timeout=100)
+            if event == sg.WINDOW_CLOSED:
+                break
+            window['progressbar'].update_bar(bar_range + 10)
+            time.sleep(0.0001)
+    
+        window.close()    
+        sg.popup('Order confirmed!')
 
 class Login:
     def __init__(self):
@@ -222,6 +219,10 @@ class Login:
                 self.login_page()
                 break
 
-#Login().login_page()
+
+
+
+# Login().login_page()
+
 
 
