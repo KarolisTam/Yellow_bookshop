@@ -15,7 +15,6 @@ class BookshopGUI():
             product_list.append([item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity])
         return product_list
 
-
     def add_to_oder_cart(self, table, values):
         selected_rows = table.SelectedRows
         if selected_rows:
@@ -23,7 +22,6 @@ class BookshopGUI():
             self.shoping_order.append(selected_row[1:])
             print(selected_row)
             return self.shoping_order
-
 
     def shopping_oder(self):
         print(self.shoping_order)
@@ -41,7 +39,16 @@ class BookshopGUI():
             elif event == "remove":
                 selected_rows = values["order_table"][0]
                 print(selected_rows)
-
+            elif event == "purchase":
+                self.loading_window()
+                for product in self.get_product_list():
+                    for product_order in self.shoping_order:
+                        if product[1] in product_order[0]:
+                            LentelesFunkcijos(Product).set_element(product[0], quantity=Product.quantity - 1)
+                for product in self.get_product_list():
+                    if product[5] == 0:
+                        LentelesFunkcijos(Product).delete_element(product[0])
+        
         shopcart.close()
 
     def purchase_history():
@@ -62,13 +69,13 @@ class BookshopGUI():
     def loading_window(self):
         layout = [
             [sg.Text('Confirming order', size=(20, 1), justification='center')],
-            [sg.ProgressBar(100, orientation='h', size=(20, 20), key='progressbar')]
+            [sg.ProgressBar(50, orientation='h', size=(20, 20), key='progressbar')]
         ]
 
         window = sg.Window('Loading order...', layout, finalize=True)
 
         for bar_range in range(100):
-            event, values = window.read(timeout=100)
+            event, values = window.read(timeout=50)
             if event == sg.WINDOW_CLOSED:
                 break
             window['progressbar'].update_bar(bar_range + 10)
@@ -218,11 +225,3 @@ class Login:
                 register_window.close()
                 self.login_page()
                 break
-
-
-
-
-# Login().login_page()
-
-
-

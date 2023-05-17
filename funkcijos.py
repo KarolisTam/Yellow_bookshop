@@ -24,10 +24,9 @@ class LentelesFunkcijos:
     def join_element_relationship(self):
         pass
 
-
 #LentelesFunkcijos(Customer).delete_element(1)
 #LentelesFunkcijos(Status).add_element(name='name1')
 #LentelesFunkcijos(Status).set_element(1, name='name2', name2='name3')
 #LentelesFunkcijos(SecurityQuestions).add_element(question_text='Pirmo augintinio vardas ?')
-#LentelesFunkcijos(Product).add_element(book_name='', author='', release_date='', price= ,)
+# LentelesFunkcijos(Product).add_element(book_name='Lord of the rings',author='Ted', realease_date='2000', price=12, quantity=1)
 #LentelesFunkcijos(Customer).set_element(1, security_key='GreenDay')
