@@ -7,11 +7,9 @@ class BookshopGUI():
 
     def __init__(self):
         self.shoping_order = []
-        self.filter_input = sg.Input("", key="FILTER BOOKS BY AUTHOR")
 
-
-    def get_product_list(self, query=session.query(Product).all()):
-        self.products = query
+    def get_product_list(self):
+        self.products = session.query(Product).all()
         product_list = []
         for item in self.products:           
             product_list.append([item.id, 
@@ -29,7 +27,7 @@ class BookshopGUI():
             print(selected_row)
             return self.shoping_order
 
-    def shopping_order(self):
+    def shopping_oder(self):
         print(self.shoping_order)
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
@@ -53,7 +51,6 @@ class BookshopGUI():
                 print(selected_rows)
                 del self.shoping_order[selected_rows]
                 shopcart["order_table"].update(values=self.shoping_order)
-          
             elif event == "purchase":
                 for product in self.get_product_list():
                     for product_order in self.shoping_order:
@@ -62,15 +59,13 @@ class BookshopGUI():
                 for product in self.get_product_list():
                     if product[5] == 0:
                         LentelesFunkcijos(Product).delete_element(product[0])
-                self.shoping_order.clear()
-                shopcart["order_table"].update(values=self.shoping_order)
                 self.loading_window()
         shopcart.close()
 
     def purchase_history():
         sg.theme("LightGreen5")
-        headers =["Book name", "Author", "Release year", "Price", "Purchase Date"]
-        layout =[
+        headers = ["Book name", "Author", "Release year", "Price", "Purchase Date"]
+        layout = [
             [sg.Table(values="", headings=headers, auto_size_columns=True, key="history_table")],
             [sg.Button("Close Purchase History", key="close")]
         ]
@@ -99,30 +94,6 @@ class BookshopGUI():
     
         window.close()    
         sg.popup('Order confirmed!')
-    
-    
-    
-    
-    
-    def filter_by_author(self):
-        filtered_books = session.query(Product).order_by(Product.author).all()
-        return self.get_product_list(query=filtered_books)
-    
-    def filter_by_year(self):
-        filtered_books_y = session.query(Product).order_by(Product.realease_date).all
-        return self.get_product_list(query=filtered_books_y)
-
-
-        # filtered_data = []
-        # filter_value = self.filter_input.get().strip().lower()
-        # if filter_value:
-        #     filtered_data = [[item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity]
-        #                     for item in self.products
-        #                     if filter_value in item.author.lower()]
-        # window["-TABLE-"].update(values=filtered_data)
-        # return filtered_data
-    
-    
 
 class Login:
     def __init__(self):
@@ -141,7 +112,7 @@ class Login:
             self.list_s_questions.append(s_question.question_text)
         
     def forgot_page(self):
-        layout =[
+        layout = [
             [sg.Text('E-mail: '), sg.Input(key="-EMAIL-")],
             [sg.Text('Security key: '), sg.Input(key="-SECURITY-")],
             [sg.Button("Back", key="-ENTER-"),
