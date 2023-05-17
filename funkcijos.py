@@ -30,3 +30,4 @@ class LentelesFunkcijos:
 #LentelesFunkcijos(Status).set_element(1, name='name2', name2='name3')
 #LentelesFunkcijos(SecurityQuestions).add_element(question_text='Pirmo augintinio vardas ?')
 #LentelesFunkcijos(Product).add_element(book_name='', author='', release_date='', price= ,)
+#LentelesFunkcijos(Customer).set_element(1, security_key='GreenDay')
