@@ -1,7 +1,7 @@
 import PySimpleGUI as sg
 from backend import Product, Customer, SecurityQuestions, engine, session
 from funkcijos import LentelesFunkcijos
-
+import time
 
 class BookshopGUI():
 
@@ -42,7 +42,6 @@ class BookshopGUI():
                 selected_rows = values["order_table"][0]
                 print(selected_rows)
 
-    
         shopcart.close()
 
     def purchase_history():
@@ -59,6 +58,24 @@ class BookshopGUI():
                 break
     
         history.close()
+    
+    def loading_window(self):
+        layout = [
+            [sg.Text('Confirming order', size=(20, 1), justification='center')],
+            [sg.ProgressBar(100, orientation='h', size=(20, 20), key='progressbar')]
+        ]
+
+        window = sg.Window('Loading order...', layout, finalize=True)
+
+        for bar_range in range(100):
+            event, values = window.read(timeout=100)
+            if event == sg.WINDOW_CLOSED:
+                break
+            window['progressbar'].update_bar(bar_range + 10)
+            time.sleep(0.0001)
+    
+        window.close()    
+        sg.popup('Order confirmed!')
 
 class Login:
     def forgot_page(self):
