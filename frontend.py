@@ -28,14 +28,6 @@ class BookshopGUI():
             return self.shoping_order
 
     def shopping_oder(self):
-        print(self.shoping_order)
-
-        ##### reik i ideti sita query i shoping order lista
-        print(session.query(Product.book_name, 
-                      Product.author, 
-                      Product.realease_date,
-                      Product.price).join(Order.products).filter(Order.customer_id==customer_id[0]).all())
-        #####
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
         layout =[
@@ -70,24 +62,21 @@ class BookshopGUI():
                     if product[5] <= 0:
                         LentelesFunkcijos(Product).delete_element(product[0])
                 self.shoping_order.clear()
-                session.query(Order.id,
-                              Order.date,
-                              Customer.name,
-                              Customer.surname,
-                              Product.book_name,
-                              Product.price).join(Customer.orders).join(Order.products).filter(Order.customer_id==customer_id[0]).all()
-
-
                 shopcart["order_table"].update(values=self.shoping_order)
                 self.loading_window()
 
         shopcart.close()
 
-    def purchase_history():
+    def purchase_history(self):
+        orders_history = []
+        query = session.query(Order.id, Product.book_name, Product.author, Order.date, Product.price).join(Order.products).join(Order.customer).filter(Customer.id==customer_id[0]).all()
+        for order in query:
+            order_list = list(order)
+            orders_history.append(order_list)
         sg.theme("LightGreen5")
-        headers = ["Book name", "Author", "Release year", "Price", "Purchase Date"]
+        headers = ["ID", "Book name", "Author", "Order date", "Price"]
         layout = [
-            [sg.Table(values="", headings=headers, auto_size_columns=True, key="history_table")],
+            [sg.Table(values=orders_history, headings=headers, auto_size_columns=True, key="history_table")],
             [sg.Button("Close Purchase History", key="close")]
         ]
         history = sg.Window("Shoping History", layout)
@@ -95,7 +84,6 @@ class BookshopGUI():
             event, values = history.read()
             if event in (sg.WIN_CLOSED, 'close'):
                 break
-    
         history.close()
     
     def loading_window(self):
@@ -103,7 +91,6 @@ class BookshopGUI():
             [sg.Text('Confirming order', size=(20, 1), justification='center')],
             [sg.ProgressBar(50, orientation='h', size=(20, 20), key='progressbar')]
         ]
-
         window = sg.Window('Loading order...', layout, finalize=True)
 
         for bar_range in range(100):
