@@ -70,6 +70,7 @@ class BookshopGUI():
     def purchase_history(self, customer_id):
         orders_history = []
         query = session.query(Order.id, Product.book_name, Product.author, Order.date, Product.price).join(Order.products).join(Order.customer).filter(Customer.id==customer_id[0]).all()
+        
         for order in query:
             order_list = list(order)
             orders_history.append(order_list)
