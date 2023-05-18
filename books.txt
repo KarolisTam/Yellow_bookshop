@@ -1,0 +1,19 @@
+book16 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=2),
+book1 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=6),
+book2 = Product(book_name='Alchemikas', author='Paulo Coelho', realease_date='1988', price=25, quantity=2),
+book3 = Product(book_name='The 48 Laws of Power', author='Robert Greene', realease_date='2000', price=20, quantity=3),
+book4 = Product(book_name='No Longer Human', author='Osamu Dazai', realease_date='2019', price=12, quantity=4),
+book5 = Product(book_name='Rich Dad Poor Dad', author='Robert T. Kiyosaki', realease_date='2017', price=23, quantity=7),
+book6 = Product(book_name='Think and Grow Rich', author='Napoleon Hill', realease_date='2005', price=15, quantity=8),
+book7 = Product(book_name='Secret History', author='Donna Tartt', realease_date='1993', price=16, quantity=20),
+book8 = Product(book_name='The Life of a Stupid Man', author='Ryunosuke Akutagawa', realease_date='2015', price=5, quantity=18),
+book9 = Product(book_name='Meditations', author='Marcus Aurelius', realease_date='2006', price=25, quantity=14),
+book10 = Product(book_name='The Art Of Seduction', author='Robert Greene', realease_date='2004', price=17, quantity=13),
+book11 = Product(book_name='House of Leaves', author='Mark Z. Danielewski', realease_date='2000', price=11, quantity=9),
+book12 = Product(book_name='Nana, Vol. 1', author='Ai Yazawa', realease_date='2008', price=15, quantity=8),
+book13 = Product(book_name='Intelligent Investor', author='Benjamin Graham', realease_date='2003', price=17, quantity=5),
+book14 = Product(book_name='The Stranger', author='Albert Camus', realease_date='1992', price=12, quantity=6),
+book15 = Product(book_name='Dune', author='Frank Herbert', realease_date='2010', price=8, quantity=11))
+
+session.add(book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12, book13, book14, book16, book16)
+session.commit()
