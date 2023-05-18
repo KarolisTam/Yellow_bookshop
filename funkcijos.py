@@ -32,3 +32,12 @@ class LentelesFunkcijos:
 #LentelesFunkcijos(Product).add_element(book_name='Lord of the rings',author='Ted', realease_date='2000', price=12, quantity=5)
 #LentelesFunkcijos(Customer).set_element(1, security_key='GreenDay')
 #LentelesFunkcijos(Customer).add_element(name='', surname='', email='', password='', security_key='', question_id='')
+
+
+####
+# LentelesFunkcijos(SecurityQuestions).add_element(question_text='Pradines mokyklos pavadinimas ?')
+# LentelesFunkcijos(SecurityQuestions).add_element(question_text='Darzelio aukletojos vardas ?')
+# LentelesFunkcijos(SecurityQuestions).add_element(question_text='Mamos mergautine pavarde ?')
+# LentelesFunkcijos(SecurityQuestions).add_element(question_text='megstamiausias dainu auturius ?')
+
+#LentelesFunkcijos(Product).add_element(book_name='Lord of the rings',author='Ted', realease_date='2000', price=12, quantity=5)
