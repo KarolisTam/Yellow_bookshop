@@ -1,9 +1,13 @@
 from sqlalchemy import Column, Integer, String, create_engine, Table, ForeignKey, Float, DateTime
 from sqlalchemy.orm import DeclarativeBase, relationship, sessionmaker
 import datetime
+import time
 
 engine = create_engine('sqlite:///bookshop.db')
 session = sessionmaker(bind=engine)()
+
+date_today = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+#print(type(datetime.datetime.fromtimestamp(time.time())))
 
 class Base(DeclarativeBase):
     pass
@@ -18,7 +22,7 @@ class Customer(Base):
     security_key = Column('Security key', String(50))
     question_id = Column('Asigned_question', ForeignKey('security_questions.id'))
     question = relationship('SecurityQuestions', back_populates='questions')
-    product_orders = relationship('ProductOrder', back_populates='customer')
+    #product_orders = relationship('ProductOrder', back_populates='customer')
     orders = relationship('Order', back_populates='customer')
 
 class SecurityQuestions(Base):
@@ -31,7 +35,7 @@ class Order(Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
     # order_name = Column('Order', String(100))
-    date = Column('Order Date', DateTime, default=datetime.datetime.utcnow)
+    date = Column('Order Date', String, default=date_today)
     # status_id = Column('Status Number', Integer, ForeignKey('status.id'))
     product_id = Column('Product Number', Integer, ForeignKey('product.id'))
     customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
@@ -40,14 +44,16 @@ class Order(Base):
     product_order = relationship('ProductOrder', back_populates='order')
     customer = relationship('Customer', back_populates='orders')
 
+#Nebenaudojama
 class ProductOrder(Base):
     __tablename__ = 'product_order'
     id = Column(Integer, primary_key=True)
-    customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
+    #customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
     order_id = Column('Order Number', Integer, ForeignKey('order.id'))
-    customer = relationship('Customer', back_populates='product_orders')
+    #customer = relationship('Customer', back_populates='product_orders')
     order = relationship('Order', back_populates='product_order')
 
+#Bookshop table which holds product stock 
 class Product(Base):
     __tablename__ = 'product'
     id = Column(Integer, primary_key=True)
@@ -58,12 +64,11 @@ class Product(Base):
     quantity = Column('Quantity', Integer)
     product = relationship('Order', back_populates='products')
 
+#Nenaudojama
 class Status(Base):
     __tablename__ = 'status'
     id = Column(Integer, primary_key=True)
     status_name = Column('Status', String(50))
-
-
 
 Base.metadata.create_all(engine)
 

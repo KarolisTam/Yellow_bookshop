@@ -1,6 +1,7 @@
 from backend import *
 
 
+
 class LentelesFunkcijos:
     def __init__(self, lentele):
         self.lentele = lentele

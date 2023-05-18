@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from backend import Product, Customer, SecurityQuestions, engine, session, Order
+from backend import Product, Customer, SecurityQuestions, ProductOrder, Order, engine, session
 from funkcijos import LentelesFunkcijos
 import time
 
@@ -68,8 +68,16 @@ class BookshopGUI():
                     if product[5] == 0:
                         LentelesFunkcijos(Product).delete_element(product[0])
                 self.shoping_order.clear()
+                #cia turi eiti kodas kad sujungti order lenteles
+                print(session.query(Order.id,
+                              Order.date,
+                              Customer.name,
+                              Product.book_name).join(Customer.orders).join(Order.products).filter(Order.customer_id==customer_id[0]).all())
+
+
                 shopcart["order_table"].update(values=self.shoping_order)
                 self.loading_window()
+
         shopcart.close()
 
     def purchase_history():
