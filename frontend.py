@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-from backend import Product, Customer, SecurityQuestions, engine, session, Order
+from backend import Product, Customer, SecurityQuestions, Order, engine, session
 from funkcijos import LentelesFunkcijos
 import time
 
@@ -23,7 +23,6 @@ class BookshopGUI():
         selected_rows = table.SelectedRows
         if selected_rows:
             selected_row = self.get_product_list()[values["-TABLE-"][0]]
-            LentelesFunkcijos(Order).add_element(customer_id=customer_id[0], product_id = values["-TABLE-"][0]+1)
             self.shoping_order.append(selected_row[1:])
             print(selected_row)
             return self.shoping_order
@@ -64,12 +63,24 @@ class BookshopGUI():
                     for product_order in self.shoping_order:
                         if product[1] in product_order[0]:
                             LentelesFunkcijos(Product).set_element(product[0], quantity=Product.quantity - 1)
+                        product_id = session.query(Product.id).filter(Product.book_name==product_order[0]).first()
+                LentelesFunkcijos(Order).add_element(customer_id=customer_id[0], product_id=product_id[0])
+
                 for product in self.get_product_list():
-                    if product[5] == 0:
+                    if product[5] <= 0:
                         LentelesFunkcijos(Product).delete_element(product[0])
                 self.shoping_order.clear()
+                session.query(Order.id,
+                              Order.date,
+                              Customer.name,
+                              Customer.surname,
+                              Product.book_name,
+                              Product.price).join(Customer.orders).join(Order.products).filter(Order.customer_id==customer_id[0]).all()
+
+
                 shopcart["order_table"].update(values=self.shoping_order)
                 self.loading_window()
+
         shopcart.close()
 
     def purchase_history():
@@ -113,18 +124,6 @@ class BookshopGUI():
         filtered_books_y = session.query(Product).order_by(Product.realease_date).all()
         return self.get_product_list(query=filtered_books_y)
 
-
-        # filtered_data = []
-        # filter_value = self.filter_input.get().strip().lower()
-        # if filter_value:
-        #     filtered_data = [[item.id, item.book_name, item.author, item.realease_date, item.price, item.quantity]
-        #                     for item in self.products
-        #                     if filter_value in item.author.lower()]
-        # window["-TABLE-"].update(values=filtered_data)
-        # return filtered_data
-    
-
-
 class Login:
     def __init__(self):
         # lists
@@ -160,7 +159,6 @@ class Login:
                 forgot_window.close()
                 return self.customer_id, False
             elif event == '-REMEMBER-':
-                #f"" UOSTO SUBINE !!!
                 email = values['-EMAIL-']
 
                 if values['-EMAIL-'] not in self.lst_customer_emails:
@@ -170,7 +168,6 @@ class Login:
                     sg.Popup('Wrong security key, Your security question is \n{}'.format(session.query(SecurityQuestions.question_text).filter(Customer.email==values['-EMAIL-']).join(Customer.question).one()[0]))
                     continue
                 else:
-                    #sg.Popup(f"E-mail: {session.query(Customer.email).filter(Customer.email==email).one()[0]}\nPassword: {session.query(Customer.password).filter(Customer.email==email).one()[0]}")
                     sg.Popup("E-mail: {0}\nPassword: {1}".format(session.query(Customer.email).filter(Customer.email==values['-EMAIL-']).one()[0], session.query(Customer.password).filter(Customer.email==values['-EMAIL-']).one()[0]))
             elif event == '-REGISTER-':
                 forgot_window.close()
@@ -241,7 +238,6 @@ class Login:
                 return self.customer_id, False
 
             elif event == '-REGISTER-':
-                #print(session.query(SecurityQuestions.id).filter(SecurityQuestions.question_text==values['-COMBO-']).one()[0])
                 if "@" not in values["-EMAIL-"]:
                     sg.Popup('Please enter valid Email')
                     continue
