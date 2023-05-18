@@ -22,8 +22,8 @@ class Customer(Base):
     security_key = Column('Security key', String(50))
     question_id = Column('Asigned_question', ForeignKey('security_questions.id'))
     question = relationship('SecurityQuestions', back_populates='questions')
-    #product_orders = relationship('ProductOrder', back_populates='customer')
     orders = relationship('Order', back_populates='customer')
+    #product_orders = relationship('ProductOrder', back_populates='customer')
 
 class SecurityQuestions(Base):
     __tablename__ = 'security_questions'
@@ -34,25 +34,16 @@ class SecurityQuestions(Base):
 class Order(Base):
     __tablename__ = 'order'
     id = Column(Integer, primary_key=True)
-    # order_name = Column('Order', String(100))
     date = Column('Order Date', String, default=date_today)
-    # status_id = Column('Status Number', Integer, ForeignKey('status.id'))
     product_id = Column('Product Number', Integer, ForeignKey('product.id'))
     customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
     products = relationship('Product', back_populates='product')
-    # status = relationship('Status')
-    product_order = relationship('ProductOrder', back_populates='order')
     customer = relationship('Customer', back_populates='orders')
-
-#Nebenaudojama
-class ProductOrder(Base):
-    __tablename__ = 'product_order'
-    id = Column(Integer, primary_key=True)
-    #customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
-    order_id = Column('Order Number', Integer, ForeignKey('order.id'))
-    #customer = relationship('Customer', back_populates='product_orders')
-    order = relationship('Order', back_populates='product_order')
-
+    # status = relationship('Status')
+    # product_order = relationship('ProductOrder', back_populates='order')
+    # status_id = Column('Status Number', Integer, ForeignKey('status.id'))
+    # order_name = Column('Order', String(100))
+    
 #Bookshop table which holds product stock 
 class Product(Base):
     __tablename__ = 'product'
@@ -64,13 +55,24 @@ class Product(Base):
     quantity = Column('Quantity', Integer)
     product = relationship('Order', back_populates='products')
 
-#Nenaudojama
-class Status(Base):
-    __tablename__ = 'status'
-    id = Column(Integer, primary_key=True)
-    status_name = Column('Status', String(50))
-
 Base.metadata.create_all(engine)
+
+#Nebenaudojama
+# class ProductOrder(Base):
+#     __tablename__ = 'product_order'
+#     id = Column(Integer, primary_key=True)
+#     #customer_id = Column('Customer Number', Integer, ForeignKey('customer.id'))
+#     order_id = Column('Order Number', Integer, ForeignKey('order.id'))
+#     #customer = relationship('Customer', back_populates='product_orders')
+#     #order = relationship('Order', back_populates='product_order')
+
+#Nenaudojama
+# class Status(Base):
+#     __tablename__ = 'status'
+#     id = Column(Integer, primary_key=True)
+#     status_name = Column('Status', String(50))
+
+
 
 # book1 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=2)
 # session.add(book1)
