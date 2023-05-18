@@ -27,7 +27,7 @@ class BookshopGUI():
             print(selected_row)
             return self.shoping_order
 
-    def shopping_oder(self):
+    def shopping_oder(self, customer_id):
         sg.theme("LightGreen5")
         headers =["Book name", "Author", "Release year", "Price"]
         layout =[
@@ -67,7 +67,7 @@ class BookshopGUI():
 
         shopcart.close()
 
-    def purchase_history(self):
+    def purchase_history(self, customer_id):
         orders_history = []
         query = session.query(Order.id, Product.book_name, Product.author, Order.date, Product.price).join(Order.products).join(Order.customer).filter(Customer.id==customer_id[0]).all()
         for order in query:
@@ -98,10 +98,10 @@ class BookshopGUI():
             if event == sg.WINDOW_CLOSED:
                 break
             window['progressbar'].update_bar(bar_range + 10)
-            time.sleep(0.0001)
+            time.sleep(0.00001)
     
         window.close()    
-        sg.popup('Order confirmed!')
+        sg.popup('You have successfully purchased books')
     
     def filter_by_author(self):
         filtered_books = session.query(Product).order_by(Product.author).all()
@@ -144,7 +144,7 @@ class Login:
 
             if event in (sg.WIN_CLOSED, '-EXIT-'):
                 forgot_window.close()
-                return self.customer_id, False
+                return self.customer_id
             elif event == '-REMEMBER-':
                 email = values['-EMAIL-']
 
@@ -158,12 +158,11 @@ class Login:
                     sg.Popup("E-mail: {0}\nPassword: {1}".format(session.query(Customer.email).filter(Customer.email==values['-EMAIL-']).one()[0], session.query(Customer.password).filter(Customer.email==values['-EMAIL-']).one()[0]))
             elif event == '-REGISTER-':
                 forgot_window.close()
-                self.register_page()
-                break
+                return self.register_page()
             elif event == '-ENTER-':
                 forgot_window.close()
-                self.login_page()
-                break
+                return self.login_page()
+
 
     def login_page(self):
         self.__init__()
@@ -179,7 +178,7 @@ class Login:
         while True:
             event, values = login_window.read()
             if event in (sg.WIN_CLOSED, '-EXIT-'):
-                return self.customer_id, False
+                break
                 
             elif event == '-ENTER-':
                 if values['-EMAIL-'] not in self.lst_customer_emails:
@@ -192,16 +191,16 @@ class Login:
                     sg.Popup('Login sucessful')
                     login_window.close()
                     self.customer_id = session.query(Customer.id).filter(Customer.email==values['-EMAIL-']).one()
-                    return self.customer_id, True
+                    break
             elif event == '-FORGOT-':
                 login_window.close()
-                self.forgot_page()
+                self.customer_id = self.forgot_page()
                 break
             elif event == '-REGISTER-':
                 login_window.close()
-                self.register_page()
+                self.customer_id = self.register_page()
                 break
-
+        return self.customer_id
     def register_page(self):
         layout =[
             [sg.Text('E-mail: '), sg.Input(key="-EMAIL-")],
@@ -222,7 +221,7 @@ class Login:
 
             if event in (sg.WIN_CLOSED, '-EXIT-'):
                 register_window.close()
-                return self.customer_id, False
+                return self.customer_id
 
             elif event == '-REGISTER-':
                 if "@" not in values["-EMAIL-"]:
@@ -243,12 +242,11 @@ class Login:
                                                             security_key=values["-SECURITY-"],
                                                             question_id=s_question)
                     register_window.close()
-                    self.login_page()
-                    break
-            
+                    return self.login_page()
             elif event == "-ENTER-":
                 register_window.close()
-                self.login_page()
+                return self.login_page()
 
-customer_id, condition = Login().login_page()
+
+
 

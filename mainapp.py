@@ -20,20 +20,21 @@ layout = [
 
 window = sg.Window("BOOK_SHOP", layout)
 
+customer_id = Login().login_page()
 
-while condition == True:
+while customer_id:
     event, values = window.read()
     if event == sg.WINDOW_CLOSED or event == 'EXIT':
         break
     elif event == 'ADD TO CART':
         obijektas.add_to_oder_cart(table, values)
     elif event == 'VIEW CART':
-        obijektas.shopping_oder()
+        obijektas.shopping_oder(customer_id)
         window["-TABLE-"].update(values=obijektas.get_product_list())
     elif event == 'FILTER BOOKS BY AUTHOR':
         window["-TABLE-"].update(values=obijektas.filter_by_author())
     elif event == 'FILTER BOOKS BY THE YEAR':
         window["-TABLE-"].update(values=obijektas.filter_by_year())
     elif event == 'VIEW PURCHASE HISTORY':
-        obijektas.purchase_history()
+        obijektas.purchase_history(customer_id)
 window.close()
