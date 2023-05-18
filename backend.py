@@ -1,12 +1,13 @@
 from sqlalchemy import Column, Integer, String, create_engine, Table, ForeignKey, Float, DateTime
 from sqlalchemy.orm import DeclarativeBase, relationship, sessionmaker
 import datetime
-import time
+import random
+
 
 engine = create_engine('sqlite:///bookshop.db')
 session = sessionmaker(bind=engine)()
 
-date_today = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+date_today = datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 #print(type(datetime.datetime.fromtimestamp(time.time())))
 
 class Base(DeclarativeBase):
@@ -47,7 +48,7 @@ class Order(Base):
 #Bookshop table which holds product stock 
 class Product(Base):
     __tablename__ = 'product'
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, default=lambda: random.randint(9999,59999), primary_key=True, unique=True)
     book_name = Column('Book Name', String(100))
     author = Column('Author', String(100))
     realease_date = Column('Realease Date', String(50))
@@ -74,9 +75,26 @@ Base.metadata.create_all(engine)
 
 
 
-# book1 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=2)
-# session.add(book1)
+# book16 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=199)
+# book1 = Product(book_name='Trys muškėtininkai', author='Aleksandras Diuma', realease_date='1190', price=15, quantity=99)
+# book2 = Product(book_name='Alchemikas', author='Paulo Coelho', realease_date='1988', price=25, quantity=223)
+# book3 = Product(book_name='The 48 Laws of Power', author='Robert Greene', realease_date='2000', price=20, quantity=74)
+# book4 = Product(book_name='No Longer Human', author='Osamu Dazai', realease_date='2019', price=12, quantity=54)
+# book5 = Product(book_name='Rich Dad Poor Dad', author='Robert T. Kiyosaki', realease_date='2017', price=23, quantity=129)
+# book6 = Product(book_name='Think and Grow Rich', author='Napoleon Hill', realease_date='2005', price=15, quantity=62)
+# book7 = Product(book_name='Secret History', author='Donna Tartt', realease_date='1993', price=16, quantity=29)
+# book8 = Product(book_name='The Life of a Stupid Man', author='Ryunosuke Akutagawa', realease_date='2015', price=5, quantity=18)
+# book9 = Product(book_name='Meditations', author='Marcus Aurelius', realease_date='2006', price=25, quantity=56)
+# book10 = Product(book_name='The Art Of Seduction', author='Robert Greene', realease_date='2004', price=17, quantity=130)
+# book11 = Product(book_name='House of Leaves', author='Mark Z. Danielewski', realease_date='2000', price=11, quantity=73)
+# book12 = Product(book_name='Nana, Vol. 1', author='Ai Yazawa', realease_date='2008', price=15, quantity=69)
+# book13 = Product(book_name='Intelligent Investor', author='Benjamin Graham', realease_date='2003', price=17, quantity=96)
+# book14 = Product(book_name='The Stranger', author='Albert Camus', realease_date='1992', price=12, quantity=145)
+# book15 = Product(book_name='Dune', author='Frank Herbert', realease_date='2010', price=8, quantity=125)
+
+# session.add_all([book1, book2, book3, book4, book5, book6, book7, book8, book9, book10, book11, book12, book13, book14, book16, book16])
 # session.commit()
+
 
 
 
